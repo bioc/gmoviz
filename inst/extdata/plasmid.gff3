@@ -1,0 +1,6 @@
+plasmid	.	promoter	0	450	.	.	.	ID=promoter
+plasmid	.	gene	451	900	.	.	.	ID=gene
+plasmid	.	gene	901	1400	.	.	.	ID=GFP
+plasmid	.	gene	1700	2200	.	.	.	ID=ampR
+plasmid	.	insert	2600	2700	.	.	.	ID=ins
+plasmid	.	insert	2800	2850	.	.	.	ID=ins

@@ -1,0 +1,9 @@
+Gene X	.	Region	5000	5600	.	.	.	ID=LHA
+Gene X	.	Region	5706	6305	.	.	.	ID=RHA
+Gene X	.	Cut site	5590	5610	.	.	.	ID=cut
+Gene X	.	Cut site	5696	5716	.	.	.	ID=cut
+Template	.	Gene	607	1311	.	.	.	ID=GFP
+Template	.	loxP site	1336	1369	.	.	.	ID=loxP
+Template	.	Promoter	1430	1927	.	.	.	ID=PGK
+Template	.	Gene	1967	2566	.	.	.	ID=ampR
+Template	.	loxP site	3123	3156	.	.	.	ID=loxP

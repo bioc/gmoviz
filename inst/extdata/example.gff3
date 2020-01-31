@@ -1,0 +1,5 @@
+chr4	.	Gene	680000	760000	.	.	.	ID=geneX
+chr4	.	Insert	360000	400000	.	.	.	ID=InsertA
+chr4	.	Gene	1080000	1200000	.	.	.	ID=geneY
+chr4	.	Insert	120000	160000	.	.	.	ID=InsertC
+chr4	.	Insert	840000	880000	.	.	.	ID=InsertB
