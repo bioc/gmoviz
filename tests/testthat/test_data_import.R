@@ -14,7 +14,8 @@ coloured_by_type <- GRanges(
   colour = c("#8dd3c7", "#e7ec83", "#8dd3c7", "#e7ec83", "#e7ec83"),
   shape = c("forward_arrow", "rectangle", "forward_arrow",
             "rectangle", "rectangle"),
-  track = rep(1, 5))
+  track = rep(1, 5),
+  type = c("Gene", "Insert", "Gene", "Insert", "Insert"))
 
 coloured_by_name <- GRanges(
   rep("chr4", 5),

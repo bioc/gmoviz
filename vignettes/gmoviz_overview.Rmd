@@ -25,13 +25,18 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 library(knitr)
-knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.keep='last',
-                      message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(fig.width=8, fig.height=5.33, fig.keep='last',
+                      message = FALSE, warning = FALSE, dev='jpeg', dpi=150)
 opts_knit$set(global.par = TRUE)
 ```
 
+```{r set_par, include=FALSE}
+par(xpd=NA, mar=c(3.1, 2.1, 3.1, 2.1))
+```
+
+
 # Introduction 
-![gmoviz logo](v2_vectorised.svg) 
+![gmoviz logo](gmoviz_logo_v6.jpg){width="60%"} 
 
 Genetically modified organisms (GMOs) and cell lines are widely used models in 
 many aspects of biological research. As part of characterising these models, 
@@ -45,7 +50,10 @@ However, current visualisation tools tend to focus on numerical data, ignoring
 the need to visualise editing events on a large yet biologically-relevant 
 scale. 
 
-`gmoviz` , as implemented in `r CRANpkg("circlize")` [@Gu_2014]. `gmoviz` 
+`gmoviz` is an R package designed to extend traditional bioinformatics 
+workflows used for genomic characterisation with powerful visualisation 
+capabilities based on the Circos [@Krzywinski_2009] plotting 
+framework, as implemented in `r CRANpkg("circlize")` [@Gu_2014]. `gmoviz` 
 offers the following key features (summarised in the diagram below):
 
 * Visualise complex structural variations, particularly relating to tandem
@@ -67,13 +75,13 @@ example_insertion <- GRanges(seqnames = "chr12",
                       ranges = IRanges(start = 70905597, end = 70917885),
                       name = "plasmid", colour = "#7270ea", length = 12000,
                       in_tandem = 11, shape = "forward_arrow")
+layout(matrix(c(1,2), nrow=1, ncol=2))
 insertionDiagram(insertion_data = example_insertion, 
                  either_side = c(70855503, 71398284),
                  start_degree = 45, space_between_sectors = 20,
                  xaxis_spacing = 45)
 highlight.sector("chr12", col = NA, border = "red", lwd = 1.5)
 highlight.sector("plasmid", col = NA, border = "red", lwd = 1.5)
-
 
 insertionDiagram(insertion_data = example_insertion, 
                  either_side = c(70855503, 71398284),
@@ -89,7 +97,7 @@ the next panel, blue boxes have been drawn around each of the tracks
 
 # Installation
 `gmoviz` can be installed from [bioconductor.org](http://bioconductor.org/) or
-its GitHub repository at _somewhere_
+its [GitHub repository](https://github.com/malhamdoosh/gmoviz)
 
 ## Bioconductor
 To install `gmoviz` via the `BiocManager`, type in R console:
@@ -100,8 +108,13 @@ BiocManager::install("gmoviz")
 ```
 
 ## GitHub
-To install the development version of `gmoviz` from GitHub,
-type in the R console: _something_
+To install the development version of `gmoviz` from GitHub, type in the R 
+console:
+```r
+if (!require("BiocManager"))
+    install.packages("BiocManager")
+BiocManager::install("malhamdoosh/gmoviz")
+```
 
 ## R package dependencies
 `gmoviz` depends on several packages from the 
@@ -183,7 +196,7 @@ BiocManager::install(c("GenomeInfoDb", "GenomicAlignments"))
 This section will walk through the basic usage of `gmoviz`.
 
 ## Higher-level plotting steps {#higher_level}
-### Insertion diagram
+### Insertion diagram {#insertion_diagram}
 `insertionDiagram` is the 'star' function of `gmoviz`, designed to make it 
 easier to plot (and thus show the copy number of) tandem insertion events. 
 It requires only one input: insertion_data (either a GRanges or a data frame)
@@ -277,7 +290,7 @@ Note that adding multiple insertion sites across different chromosomes using
 `insertionDiagram` is currently **not** supported; it simply becomes too messy 
 and crowded on a single circle. If you are interested in showing many 
 insertions throughout the genome, please see the `multipleInsertionDiagram`
-function [here](#aobf) which uses many circles to avoid this problem
+function [here](#aobf) which uses multiple circles to avoid this problem
 
 #### Adding more information {#cnd_more_info}
 The `insertionDiagram` function (and also the `featureDiagram` function which 
@@ -290,7 +303,7 @@ to a plot.
 reading in label data from file can be found [here](#labels).
 
 Firstly, labels:
-```{r cnd-labels}
+```{r cnd-labels, fig.height=8, fig.width=12}
 nearby_genes <- GRanges(seqnames = c("chr12", "chr12"),
                         ranges = IRanges(start = c(70901000, 70911741),
                                          end = c(70910000, 70919000)),
@@ -332,12 +345,9 @@ coverage <- GRanges(seqnames = rep("chr12", 400),
 insertionDiagram(insertion_data = example_insertion, 
                  coverage_data = coverage,
                  coverage_rectangle = "chr12",
-                 label_data = nearby_genes,
                  either_side = nearby_genes, 
                  space_between_sectors = 20,
-                 xaxis_spacing = 75, # one x axis label per 75 degrees
-                 label_size = 0.8, # smaller labels so they fit
-                 track_height = 0.1) # smaller shapes so the labels fit
+                 xaxis_spacing = 75) # one x axis label per 75 degrees
 ```
 Notice how the rectangle representing chr12 has been replaced by a line graph
 of the coverage. This allows us to see that there has been a deletion of gene 
@@ -381,7 +391,7 @@ start_degree = 45, space_between_sectors = 20)
 The `multipleInsertionDiagram` is an extension of the `insertionDiagram`. It
 displays many (up to 8) insertions throughout the genome by drawing multiple 
 `insertionDiagram` figures around a central whole genome circle like so:
-```{r aobf_example, echo=FALSE, out.width="1200px", out.height="800px", dev="pdf"}
+```{r aobf_example, echo=FALSE}
 ideogram_data <- GRanges(
   seqnames = paste0("chr", 1:6), 
   ranges = IRanges(start = rep(0, 6), end = rep(12000, 6)))
@@ -408,7 +418,7 @@ start and end of each of the chromosomes in the genome (see
 [here](#get_coverage) for how to import this from file)
 
 For example, to generate the plot shown above:
-```{r aobf_basic, out.width="1200px", out.height="800px", dev="pdf"}
+```{r aobf_basic}
 ideogram_data <- GRanges(
   seqnames = paste0("chr", 1:6), 
   ranges = IRanges(start = rep(0, 6), end = rep(12000, 6)))
@@ -434,7 +444,7 @@ each little bit of the diagram.
 Just like `insertionDiagram`, `multipleInsertionDiagram` is able to display
 more information, like coverage and labels. These work just like for the 
 [regular insertion diagram](#cnd_more_info):
-```{r aobf_coverage_labels, out.width="1200px", out.height="800px", dev="pdf"}
+```{r aobf_coverage_labels}
 ## example coverage and labels
 example_coverage <- GRanges(
 seqnames = c(rep("chr1", 100), rep("chr5", 100)),
@@ -463,7 +473,7 @@ different insertion events in the same GRanges/data frame.
 
 For the arguments `either_side` and `style` however, this function differs 
 slightly. These can be set overall (by a single value):
-```{r aobf_single_val, out.width="1200px", out.height="800px", dev="pdf"}
+```{r aobf_single_val}
 multipleInsertionDiagram(insertion_data = insertion_data,
                          genome_ideogram_data = ideogram_data,
                          either_side = 1000, style = 2)
@@ -472,7 +482,7 @@ multipleInsertionDiagram(insertion_data = insertion_data,
 However, it is usually best (especially for `either_side`) to choose a value
 that suits the particular event. This can be done with a named vector (for
 `style`) or a named list (for `either_side`):
-```{r aobf_es_GRanges, out.width="1200px", out.height="800px", dev="pdf"}
+```{r aobf_es_GRanges}
 ## it's even possible to use GRanges in this way
 either_side_GRange <- GRanges("chr5", IRanges(1000, 3200))
 multipleInsertionDiagram(insertion_data = insertion_data,
@@ -584,7 +594,7 @@ either arrows (for genes) or rectangles (for other features).[^6]
 
 In this case, it will look better if our cut sites are drawn as triangles and 
 are set slightly away from the remaining features on the second track:
-```{r fdd-complex-construct-plot}
+```{r fdd-complex-construct-plot, fig.height=8, fig.width=12}
 ## make a few edits to the feature_data: 
 complex_features$track[c(3,4)] <- 2 # cut sites on the next track in
 complex_features$shape[c(3,4)] <- "upwards_triangle" # triangles 
@@ -612,7 +622,7 @@ the link.[^7] For example, the following link goes from 5600-5706bp on gene X
 to 0-3788bp on the template.
 
 
-```{r fdd-link, fig.height = 8.23, fig.width = 11.69}
+```{r fdd-link, fig.height=8, fig.width=12}
 # link data
 link <- data.frame(chr = c("Gene X", "Template"),
                    start = c(5600, 0),
@@ -660,14 +670,14 @@ out the sectors for data to be plotted into. To do this, we need some
     `end`.
 
 For example, the following two ideogram data are equivalent:
-```{r two-types-of-ideo, fig.keep='high'}
+```{r two-types-of-ideo}
 ideogram_1 <- GRanges(seqnames = c("chrA", "chrB", "chrC"),
                  ranges = IRanges(start = rep(0, 3), end = rep(1000, 3)))
 ideogram_2 <- data.frame(chr = c("chrA", "chrB", "chrC"), 
                     start = rep(0, 3),
-                    end = rep(1000, 3))  
-gmovizInitialise(ideogram_1)
-gmovizInitialise(ideogram_2)
+                    end = rep(1000, 3))
+print(ideogram_1)
+print(ideogram_2)
 ```
 Both of the higher level functions `featureDiagram` and `insertionDiagram` do
 this as their first step.
@@ -704,21 +714,21 @@ you can of course edit the ideogram GRanges after it is generated).
 
 If we want only a single chromosome/sequence, we can supply it to 
 `wanted_chr`:
-```{r getIdeogramData-wanted_chr}
+```{r getIdeogramData_wanted_chr}
 getIdeogramData(bam_file = pasillaBamSubset::untreated3_chr4(),
                 wanted_chr = "chr4")
 ```
 
 Alternatively, if we want all chromosomes/sequences expect one, we can supply 
 it to `unwanted_chr`:
-```{r getIdeogramData-unwanted_chr}
+```{r getIdeogramData_unwanted_chr}
 getIdeogramData(bam_file = pasillaBamSubset::untreated3_chr4(),
                 unwanted_chr = "chrM")
 ```
 
 Finally, you can supply any regex pattern to `just_pattern` to create your own
 custom filter:
-```{r getIdeogramData-just_pattern}
+```{r getIdeogramData_just_pattern}
 getIdeogramData(bam_file = pasillaBamSubset::untreated3_chr4(),
                 just_pattern = "R$")
 ```
@@ -730,13 +740,13 @@ file.
 ### Initialising the graph
 Now that we have the ideogram data, we can initialise the graph. For this 
 example, we will just focus on chromosome 4. 
-```{r gmovizInitialise}
+```{r gmovizInitialise, fig.width=6, fig.height=4}
 gmovizInitialise(fly_ideogram_chr4_only, track_height = 0.15)
 ```
 
 We can see that a rectangle has been plotted and labelled to indicate chr4.
 Changing a few visual settings, we can create a better looking ideogram:
-```{r gmovizInitialise-pretty}
+```{r gmovizInitialise-pretty, fig.width=6, fig.height=4}
 gmovizInitialise(fly_ideogram_chr4_only, 
                  space_between_sectors = 25, # bigger space between start & end 
                  start_degree = 78, # rotate the circle
@@ -909,7 +919,7 @@ as the number of labels) to `label_colour` rather than just a single colour.
 You don't have to have the colours as a part of the label data, it's just a
 bit easier to keep track of that way.
 
-```{r labels-from-gff}
+```{r labels_from_gff}
 labels_from_file <- getLabels(
   gff_file = system.file("extdata", "example.gff3", package = "gmoviz"),
   colour_code = TRUE)
@@ -925,7 +935,7 @@ length relative to all of the other sectors on the plot to faciliate accurate
 representation of the scale. However, when a plot includes sectors that differ
 greatly in size, this can lead to problems. For example:
 
-```{r zooming-ideo}
+```{r zooming_ideo}
 fly_ideogram <- getIdeogramData(bam_file = pasillaBamSubset::untreated3_chr4(),
                                 unwanted_chr = "chrM")
 gmovizInitialise(fly_ideogram)
@@ -946,20 +956,8 @@ gmovizInitialise(fly_ideogram,
                  custom_sector_width = c(0.2, 0.2, 0.2, 0.2, 0.2, 0.1, 0.1))
 ```
 Notice that the `custom_sector_width` vector had length 7, because this is how 
-many sectors there are. 
-
-`custom_sector_width` can also be used for the `insertionDiagram` and
-`featureDiagram` functions. For example:
-```{r cnd-custom_sector_width}
-# default
-insertionDiagram(example_insertion, either_side = c(70855503, 71398284),
-start_degree = 45, space_between_sectors = 20)
-
-# custom_sector_width
-insertionDiagram(example_insertion, either_side = c(70855503, 71398284),
-                 start_degree = 45, space_between_sectors = 20, 
-                 custom_sector_width = c(0.5, 0.5))
-```
+many sectors there are. `custom_sector_width` can also be used for the 
+`insertionDiagram` and `featureDiagram` functions in the same way.
 
 ##### Zooming {#zooming}
 Whilst it is quite easy to set custom sector widths when there are only a few
@@ -972,7 +970,7 @@ We can solve this problem by using the zooming functionality of
 supply the names of sector(s) to zoom to the `zoom_sectors` argument:
 ```{r gmovizInitialise-zooming-after}
 gmovizInitialise(fly_ideogram, zoom_sectors = c("chr4", "chrYHet"),
-                 zoom_prefix = "z_") -> t
+                 zoom_prefix = "z_")
 ```
 Now, chr4 and chrYHet are clearly visible alongside the rest of the sectors.
 Notice that chrYHet is still around 1/4 of the size of chr4, as is expected
@@ -993,7 +991,7 @@ The 'feature' track, plots regions of interest just like the
 a convenient combination of `gmovizInitialise` and `drawFeatureTrack`). If you 
 only want to plot features, then using `featureDiagram` is probably easier, but
 taking a track-by-track approach with `drawFeatureTrack` allows the combination 
-of feature tracks with numeric data (see [here](#scatterplot_track) for an 
+of feature tracks with numeric data (see [here](#numeric_tracks) for an 
 example). 
 
 Just like the `featureDiagram`, `drawFeatureTrack` requires feature data. This 
@@ -1026,8 +1024,12 @@ for features that are not stranded.
 Please try to keep the number of tracks below 3 if possible, otherwise there 
 may not be enough space in the circle for all of them.
 
-Note that _track_, _shape_, _colour_ and _label_ are all optional: if any of
-these columns are not supplied the features will still be plotted and default
+* **type** A character string describing the type of the feature (for example
+a gene or inserted sequence). This is only used for generating a legend for
+the features based on colour-coding by type and is thus completely optional. 
+
+Note that _track_, _shape_, _colour_ and _label_ are also optional: if any of 
+these columns are not supplied the features will still be plotted and default 
 values will be allocated.
 
 #### Reading in the feature data
@@ -1070,13 +1072,13 @@ the feature being plotted. For example, in the following plot, the second 'ins'
 label is drawn outside the feature, further towards the centre of the circle.
 This is because the size of the feature is less than the 
 `feature_label_cutoff`.
-```{r feature-labels}
+```{r feature_label_cutoff}
 featureDiagram(plasmid_ideogram, plasmid_features, track_height = 0.17)
 ```
 
 Of course, you can specify your own cutoff. At 1, all labels will be plotted 
 inside their respective features. 
-```{r label cutoff}
+```{r change_label_cutoff}
 ## smallest label cutoff
 featureDiagram(plasmid_ideogram, plasmid_features, track_height = 0.17,
                feature_label_cutoff = 1)
@@ -1095,55 +1097,28 @@ numeric_data <- GRanges(seqnames = rep("chr4", 50),
                        value = runif(50, 0, 25))
 ```
 
-#### Scatterplot track {#scatterplot_track}
-Scatterplot tracks can be plotted with `drawScatterplotTrack`:
-```{r drawScatterplotTrack}
-# remember to initialise first
+Scatterplot tracks can be plotted with `drawScatterplotTrack` and line graphs
+with `drawLinegraphTrack`:
+```{r numeric_data_plots}
+## remember to initialise first
 gmovizInitialise(fly_ideogram_chr4_only, 
                  space_between_sectors = 25, start_degree = 78, 
                  sector_label_size = 1, xaxis_spacing = 30)
+## scatterplot
 drawScatterplotTrack(numeric_data)
-```
 
-Of course, you can combine the feature and scatterplot tracks:
-```{r drawScatterplotTrack-with-features}
-gmovizInitialise(fly_ideogram_chr4_only, space_between_sectors = 25, 
-                 start_degree = 78, xaxis_spacing = 30,
-                 sector_label_size = 1)
-drawScatterplotTrack(numeric_data, gridline_colour = NULL, 
-                     track_border_colour = "#000000")
-drawFeatureTrack(features, feature_label_cutoff = 80000,
-                 track_height = 0.15)
+## line graph
+drawLinegraphTrack(sort(numeric_data), gridline_colour = NULL)
 ```
+Note that for the line graph track, the data should be sorted in ascending 
+order before plotting.
 
-It is also possible to colour the points according to a cutoff:
-Colour-coding points can help to make it easier to see their values at a 
-glance. For example, copy number variation can be depicted with a scatterplot, 
-and the colours of the points themselves can represent gains and losses. To 
-achieve this, simply set `point_bicolour_cutoff` to the numeric value that you 
-want to set as the threshold:
-```{r point_bicolour_cutoff}
-numeric_data <- GRanges(seqnames = rep("chr4", 100),
-                       ranges = IRanges(start = sample(0:1320000, 100),
-                                        width = 1),
-                       value = runif(100, -2, 5))
+These numeric tracks can then be combined with feature tracks, as desired:
+```{r numeric_data_with_features, fig.height=8, fig.width=12}
 gmovizInitialise(fly_ideogram_chr4_only, space_between_sectors = 25, 
-                 start_degree = 78, sector_label_size = 1, xaxis_spacing = 30)
-drawScatterplotTrack(numeric_data, point_bicolour_cutoff = 2, 
-                     point_colour = c("red", "blue"),
-                     point_outline_colour = c("black", "black"))
-```
-
-#### Line graph track
-The line graph function works in much the same way as the scatterplot one:
-```{r drawLinegraphTrack}
-gmovizInitialise(fly_ideogram_chr4_only, space_between_sectors = 25, 
-                 start_degree = 78, xaxis_spacing = 30,
-                 sector_label_size = 1)
-drawLinegraphTrack(sort(numeric_data), gridline_colour = NULL, 
-                   track_border_colour = "#000000")
-drawFeatureTrack(features, feature_label_cutoff = 80000,
-                 track_height = 0.15)
+                 start_degree = 78, xaxis_spacing = 30, sector_label_size = 1)
+drawScatterplotTrack(numeric_data, track_height = 0.14, yaxis_increment = 12)
+drawFeatureTrack(features, feature_label_cutoff = 80000, track_height = 0.15)
 ```
 
 ## Finishing touches {#finishing_touches}
@@ -1156,22 +1131,13 @@ simplicity, `gmoviz` provides the `makeLegends` function to create legend
 objects without requiring an understanding of how the `ComplexHeatmap` package 
 works. 
 
-Here, we will make a legend for the following plot:
-```{r plot-for-legend}
-gmovizInitialise(fly_ideogram_chr4_only, space_between_sectors = 25, 
-                 start_degree = 78, xaxis_spacing = 30, sector_label_size = 1)
-drawScatterplotTrack(numeric_data, gridline_colour = NULL, 
-                     track_border_colour = "#000000")
-drawFeatureTrack(features[1:2, ], feature_label_cutoff = 80000,
-                 track_height = 0.15)
-```
-
+Here, we will make a legend for the plot shown just previously. 
 ```{r makeLegends}
-legend <- makeLegends(feature_legend = TRUE, feature_data = features[1:2, ],
-                   feature_legend_title = "Regions of interest",
-                   scatterplot_legend = TRUE, 
-                   scatterplot_legend_title = "Numerical data",
-                   scatterplot_legend_labels = "value")
+legend <- makeLegends(
+    feature_legend = TRUE, feature_data = features, 
+    feature_legend_title = "Regions of interest", scatterplot_legend = TRUE,
+    scatterplot_legend_title = "Numeric data", 
+    scatterplot_legend_labels = "value")
 ```
 
 `legend` is a legend object that can be plotted alongside a circos plot using
@@ -1195,14 +1161,15 @@ directly made using the functionality of the `ComplexHeatmap` package.
 ```{r gmovizPlot}
 gmovizPlot(file_name = "example.svg", file_type = "svg", 
            plotting_functions = {
-    gmovizInitialise(fly_ideogram_chr4_only, space_between_sectors = 25,
-                     start_degree = 78, xaxis_spacing = 30)
-    drawScatterplotTrack(numeric_data, gridline_colour = NULL, 
-                         track_border_colour = "#000000")
-    drawFeatureTrack(features[1:2, ], feature_label_cutoff = 80000,
-                     track_height = 0.15)
+    gmovizInitialise(
+        fly_ideogram_chr4_only, space_between_sectors = 25, start_degree = 78,
+        xaxis_spacing = 30, sector_label_size = 1)
+    drawScatterplotTrack(
+        numeric_data, track_height = 0.14, yaxis_increment = 12)
+    drawFeatureTrack(
+        features, feature_label_cutoff = 80000, track_height = 0.15)
 }, legends = legend, title = "Chromosome 4", background_colour = "white",
-height = 130, width = 240)
+width = 8, height = 5.33, units = "in")
 ```
 
 ![gmovizPlot example](example.svg)
@@ -1250,32 +1217,26 @@ beginning of the `gmovizInitialise`, `featureDiagram` and `insertionDiagram`
 functions) not at the end of functions. This means that, after you have run a 
 `gmoviz` plotting function, you can use any `circlize` function to make 
 further additions to the plot. 
-For example, we can add more text to annotate the `featureDiagram` plot we
-created [here](#complex_features):
-```{r circlize-annotate-text}
-featureDiagram(ideogram_data = complex_ideogram, 
-               feature_data = complex_features, 
-               label_data = exon_label, custom_sector_width = c(0.6, 0.4),
-               sector_colours = c("#6fc194", "#84c6d6"),
-               sector_border_colours = c("#599c77", "#84c6d6"),
-               space_between_sectors = 25, start_degree = 184, 
-               label_size = 1.1, link_data = link)
-circos.text(x = 6000, y = 0.5, sector.index = "Gene X", track.index = 3, 
-            facing = "bending.inside", labels = "on chrY")
-```
-Notice the new label on the ideogram, indicating which chromosome gene X
-belongs to.
-
-We can also add a highlight to draw attention to a particular region of a plot:
-```{r circlize-annotate-rect}
+For an example, we will further annotate the `insertionDiagram` plot produced
+[here](#insertion_diagram):
+```{r circlize_annotation}
 insertionDiagram(example_insertion, either_side = c(70855503, 71398284),
                  start_degree = 45, space_between_sectors = 20)
+
+## annotate with text
+circos.text(x = 81000, y = 0.25, sector.index = "plasmid", track.index = 1, 
+            facing = "bending.inside", labels = "(blah)", cex = 0.75)
+
+## annotate with a box
 circos.rect(xleft = 0, xright = 12000, ytop = 1, ybottom = 0, 
             track.index = 2, sector.index = "plasmid", border = "red")
 ```
-Notice the red box drawn around the first copy of the insert.
-
-For more information about using `circlize`, see the comprehensive book
+Of course, use of `circlize` functions is not just limited to small 
+annotations. Functions such as `circos.trackPlotRegion()` and `circos.track()` 
+can be used to add additional tracks to plots generated with `gmoviz` and 
+likewise the `gmoviz` track functions (*e.g.* `drawFeatureTrack`) can be used
+to add to plots previously generated with `circlize`. For more information 
+about using `circlize`, see the comprehensive book
 [here](https://jokergoo.github.io/circlize_book/book/)
 
 **Warning:** this also means that if you want to use `circlize` to generate a 
