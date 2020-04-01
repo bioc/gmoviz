@@ -2,7 +2,7 @@ Package: gmoviz
 Type: Package 
 Title: Seamless visualization of complex genomic variations in GMOs and
     edited cell lines
-Version: 0.99.3
+Version: 0.99.4
 Authors@R: c(
     person("Kathleen", "Zeglinski", email = "kathleen.zeglinski@csl.com.au", 
     role = c("cre", "aut")), 

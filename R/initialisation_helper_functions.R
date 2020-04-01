@@ -52,6 +52,8 @@
     sorted_ideogram_data <- ideogram_data[order(ideogram_data$sort) ,]
 
     sorted_ideogram_data <- sorted_ideogram_data[, -4] # remove sort column
-    sorted_ideogram_data$chr <- droplevels(sorted_ideogram_data$chr)
+    if (methods::is(sorted_ideogram_data$chr, "factor")) {
+        sorted_ideogram_data$chr <- droplevels(sorted_ideogram_data$chr)
+    }
     return(sorted_ideogram_data)
 }

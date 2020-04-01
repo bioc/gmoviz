@@ -9,7 +9,8 @@ passing_GRanges <- GRanges(c("chr1", "chr2", "chr3"),
                                    end = c(1000, 2000, 3000)))
 passing_dataframe <- data.frame(chr = c("chr1", "chr2", "chr3"),
                                 start = c(0, 0, 0),
-                                end = c(1000, 2000, 3000))
+                                end = c(1000, 2000, 3000), 
+                                stringsAsFactors = TRUE)
 test_that("checking ideo data with checkIdeogramData is working", {
     expect_error(gmoviz:::.checkIdeogramData("test"))
     expect_error(gmoviz:::.checkIdeogramData(missing_columns))
@@ -135,7 +136,8 @@ passing_GRanges <- GRanges(c("chr1", "chr2", "chr3"),
 passing_dataframe <- data.frame(chr = c("chr1", "chr2", "chr3"),
                                 start = c(0, 0, 0),
                                 end = c(1000, 2000, 3000),
-                                coverage = c(0, 4, 100))
+                                coverage = c(0, 4, 100),
+                                stringsAsFactors = TRUE)
 test_that("checking coverage data with checkCoverageData is working", {
     expect_error(gmoviz:::.checkCoverageData("test"))
     expect_error(gmoviz:::.checkCoverageData(missing_columns))

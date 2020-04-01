@@ -41,7 +41,7 @@
     ## otherwise, take all columns except width and strand
     ## this assumes that the metadata columns provided are relevant
     } else {
-        bed <- as.data.frame(GRange, row.names=NULL, stringsAsFactors=FALSE)
+        bed <- as.data.frame(GRange, row.names=NULL)
         bed <- subset(bed, select=-c(width, strand))
         new_col_names <- colnames(bed)
         new_col_names[1] <- "chr"

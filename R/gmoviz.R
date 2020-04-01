@@ -938,7 +938,6 @@ drawScatterplotTrack <- function(plot_data, track_border_colour = "black",
 #' chr = sample(c('region 1', 'region 2','region 3'), size=300, replace=TRUE),
 #' start = seq(0, 10000, length.out=300), end = seq(0, 10000, length.out=300),
 #' val = rnorm(300, 2, 0.5))
-
 #' ## line graph with no shading (just the line)
 #' drawLinegraphTrack(smallplot_data, line_shade_colour=NULL)
 #'
