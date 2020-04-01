@@ -12,10 +12,12 @@ featureDiagram(ideogram_data, feature_data, start_degree = 180,
   sector_label_size = 1.3, sector_label_colour = "black",
   label_data = NULL, label_size = 1.1, label_colour = "black",
   xaxis = TRUE, xaxis_label_size = 0.9, xaxis_colour = "#747577",
-  xaxis_spacing = 10, feature_label_cutoff = 50, track_height = 0.1,
+  xaxis_spacing = 10, feature_label_cutoff = 50,
+  xaxis_spacing_unit = "deg", track_height = 0.1,
   feature_label_size = 0.9, link_data = NULL,
   link_colour = "#84c6d6", link_ends = "default", custom_ylim = NULL,
-  label_track_height = 0.1 * feature_label_size)
+  label_track_height = 0.1 * feature_label_size,
+  feature_outline = TRUE)
 }
 \arguments{
 \item{ideogram_data}{Either a \linkS4class{GRanges} representing regions of
@@ -98,13 +100,18 @@ labels (for colour-coding).}
 \item{xaxis_colour}{Colour of the x axis labels.}
 
 \item{xaxis_spacing}{Space between the x axis labels, in degrees.
-Alternatively, the string "start_end" will place a label at the start and
+Alternatively, the string 'start_end' will place a label at the start and
 end of each sector only.}
 
 \item{feature_label_cutoff}{To enhance readability when the shapes are
 small, those labels belonging to features smaller than
 \code{feature_label_cutoff} will instead be plotted on a new track closer
 to the centre of the circle, rather than inside the shapes themselves.}
+
+\item{xaxis_spacing_unit}{Either \code{"deg"} to draw ticks every certain
+number of degrees around the circle or \code{"bp"} to draw ticks every
+certain bp around the circle (be warned that when the scales for each sector
+are very different, it's best to use \code{"deg"})}
 
 \item{track_height}{The height (vertical distance around the circle) that
 will be taken up by this track. Should be a number between 0 (none) and 1
@@ -130,6 +137,10 @@ limits. No need to set if not using coverage rectangles or if you're happy
 with the default: c(0, maximum coverage).}
 
 \item{label_track_height}{Size of the track on which to plot the labels.}
+
+\item{feature_outline}{Should a black outline be drawn around the feature
+shape? (It is recommended to set this to \code{FALSE} when dealing with
+very small features)}
 }
 \value{
 Generates an image of the feature data supplied.
@@ -150,13 +161,13 @@ colours may not be correct.
 
 \examples{
 ## plasmid map
-plasmid_ideogram <- data.frame(chr="plasmid", start=0, end=2500)
+plasmid_ideogram <- data.frame(chr='plasmid', start=0, end=2500)
 
-plasmid_features <- GRanges(seqnames=rep("plasmid", 4),
+plasmid_features <- GRanges(seqnames=rep('plasmid', 4),
 ranges=IRanges(start=c(0, 451, 901, 1700), end=c(450, 900, 1400, 2200)),
-colour=c("#d44a9f", "#4a91d4", "#7ad44a", "#d49d4a"),
-label=c("promoter", "gene", "GFP", "ampR"),
-shape=c("rectangle", "forward_arrow", "forward_arrow", "reverse_arrow"),
+colour=c('#d44a9f', '#4a91d4', '#7ad44a', '#d49d4a'),
+label=c('promoter', 'gene', 'GFP', 'ampR'),
+shape=c('rectangle', 'forward_arrow', 'forward_arrow', 'reverse_arrow'),
 track=rep(1, 4))
 
 featureDiagram(plasmid_ideogram, plasmid_features)

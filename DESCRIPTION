@@ -2,7 +2,7 @@ Package: gmoviz
 Type: Package 
 Title: Seamless visualization of complex genomic variations in GMOs and
     edited cell lines
-Version: 0.99.2
+Version: 0.99.3
 Authors@R: c(
     person("Kathleen", "Zeglinski", email = "kathleen.zeglinski@csl.com.au", 
     role = c("cre", "aut")), 
@@ -30,7 +30,7 @@ Depends:
     circlize, 
     GenomicRanges, 
     graphics, 
-    R (>= 4.0)
+    R (>= 4.0.0)
 Imports: 
     grid, 
     gridBase, 
@@ -47,7 +47,7 @@ Imports:
     pracma, 
     colorspace,
     S4Vectors
-License: GPL-3 | file LICENSE
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.0.2

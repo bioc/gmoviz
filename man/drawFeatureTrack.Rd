@@ -8,7 +8,7 @@ drawFeatureTrack(feature_data, flipped_sector = NULL,
   feature_label_cutoff = 50, track_height = 0.1,
   feature_label_size = 0.9, label_track_height = 0.1 *
   feature_label_size, coverage_rectangle = NULL, coverage_data = NULL,
-  internal = FALSE)
+  internal = FALSE, feature_outline = TRUE)
 }
 \arguments{
 \item{feature_data}{A data frame or \linkS4class{GRanges} containing the
@@ -46,6 +46,10 @@ outermost track (track 0), please fill these in the same as in your
 to supply these}.}
 
 \item{internal}{For internal use only.}
+
+\item{feature_outline}{Should a black outline be drawn around the feature
+shape? (It is recommended to set this to \code{FALSE} when dealing with
+very small features)}
 }
 \value{
 Adds a 'feature' track to an existing plot.
@@ -65,13 +69,13 @@ is suggested to keep this label relatively short, if possible.}
 \item{colour}{A character string of a colour to use. Supports hex colours
 (\emph{e.g. #000000}) and named R colours (\emph{e.g. red}).}
 \item{shape}{The shape that will be used to represent the feature: \itemize{
-\item \code{"rectangle"}
-\item \code{"forward_arrow"}
-\item \code{"reverse_arrow"}
-\item \code{"upwards_triangle"} (out of the circle).
-\item \code{"downwards_triangle"} (into the circle).} It is suggested to use
-\code{"forward_arrow"} for genes on the forward strand and
-\code{"reverse_arrow"} for genes on the reverse strand.}
+\item \code{'rectangle'}
+\item \code{'forward_arrow'}
+\item \code{'reverse_arrow'}
+\item \code{'upwards_triangle'} (out of the circle).
+\item \code{'downwards_triangle'} (into the circle).} It is suggested to use
+\code{'forward_arrow'} for genes on the forward strand and
+\code{'reverse_arrow'} for genes on the reverse strand.}
 \item{track}{The index of the track on which to plot the feature: \itemize{
 \item 0 represents the outermost track, where the ideogram rectangles that
 represent sequences/chromosomes are plotted.
@@ -81,22 +85,22 @@ strongly recommended to keep the tracks below 3, otherwise there may not be
 enough space in the circle to fit them all.}}
 These columns are all \strong{optional}. If you don't supply them, then
 default values will be added as follows: \describe{
-\item{label}{\code{""}}
+\item{label}{\code{''}}
 \item{colour}{a colour allocated from \code{\link{rich_colours}}}
-\item{shape}{\code{"rectangle"}}
+\item{shape}{\code{'rectangle'}}
 \item{track}{\code{1}}
 }
 }
 
 \examples{
 ## plasmid map
-plasmid_ideogram <- data.frame(chr="plasmid", start=0, end=2500)
+plasmid_ideogram <- data.frame(chr='plasmid', start=0, end=2500)
 
-plasmid_features <- GRanges(seqnames=rep("plasmid", 4),
+plasmid_features <- GRanges(seqnames=rep('plasmid', 4),
 ranges=IRanges(start=c(0, 451, 901, 1700), end=c(450, 900, 1400, 2200)),
-colour = c("#d44a9f", "#4a91d4", "#7ad44a", "#d49d4a"),
-label = c("promoter", "gene", "GFP", "ampR"),
-shape = c("rectangle", "forward_arrow", "forward_arrow", "reverse_arrow"),
+colour = c('#d44a9f', '#4a91d4', '#7ad44a', '#d49d4a'),
+label = c('promoter', 'gene', 'GFP', 'ampR'),
+shape = c('rectangle', 'forward_arrow', 'forward_arrow', 'reverse_arrow'),
 track = rep(1, 4))
 
 ## for a simple case like this you might as well use the featureDiagram
@@ -107,7 +111,7 @@ drawFeatureTrack(plasmid_features)
 ## however the drawFeatureTrack function allows more flexibility e.g. if you
 ## want to add features to a plot containing numerical data for example:
 ## data
-scatter_data <- GRanges(rep("plasmid", 50),
+scatter_data <- GRanges(rep('plasmid', 50),
 IRanges(start=sample(1:3000, 50), width=2),
 scatter=rnorm(50, mean=4, sd=1))
 

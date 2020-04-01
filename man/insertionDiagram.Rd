@@ -14,7 +14,8 @@ insertionDiagram(insertion_data, style = 1, either_side = "default",
   label_data = NULL, label_colour = "black", link_colour = "default",
   label_size = 1.1, xaxis = TRUE, xaxis_label_size = 0.9,
   xaxis_colour = "#747577", xaxis_spacing = 10,
-  link_ends = "default", track_height = 0.15, internal = FALSE)
+  xaxis_spacing_unit = "deg", link_ends = "default",
+  track_height = 0.15, internal = FALSE)
 }
 \arguments{
 \item{insertion_data}{A \code{\link{GRanges}} or data frame describing the
@@ -32,7 +33,7 @@ or a GRanges (in which case all ranges in the GRanges object will be used
 to determine the start/end points of the sector)}
 
 \item{insertion_label}{The label(s) that will be applied to the insertions.
-If \code{"default"} then the name of the insertion will be used to label
+If \code{'default'} then the name of the insertion will be used to label
 single copy insertions and a number will be used for multiple copy number
 insertions. Otherwise, \code{insertion_label} should be a vector with one
 element for each row of the insertion data, indicating the label that should
@@ -106,8 +107,13 @@ code, the transparency is automatically added.}
 \item{xaxis_colour}{Colour of the x axis labels.}
 
 \item{xaxis_spacing}{Space between the x axis labels, in degrees.
-Alternatively, the string "start_end" will place a label at the start and
+Alternatively, the string 'start_end' will place a label at the start and
 end of each sector only.}
+
+\item{xaxis_spacing_unit}{Either \code{"deg"} to draw ticks every certain
+number of degrees around the circle or \code{"bp"} to draw ticks every
+certain bp around the circle (be warned that when the scales for each sector
+are very different, it's best to use \code{"deg"})}
 
 \item{link_ends}{How far the link extends in either direction. \emph{This is
 set automatically} but if you want to edit it, provide a vector of length 2
@@ -139,17 +145,17 @@ is suggested to keep this label relatively short, if possible.}
 \item{colour}{A character string of a colour to use. Supports hex colours
 (\emph{e.g. #000000}) and named R colours (\emph{e.g. red}).}
 \item{shape}{The shape that will be used to represent the feature: \itemize{
-\item{\code{"rectangle"}} is a rectangle.
-\item{\code{"forward_arrow"}} for a forwards facing arrow.
-\item{\code{"reverse_arrow"}} for a backwards (reverse) facing arrow.} It is
-suggested to use \code{"forward_arrow"}}
+\item{\code{'rectangle'}} is a rectangle.
+\item{\code{'forward_arrow'}} for a forwards facing arrow.
+\item{\code{'reverse_arrow'}} for a backwards (reverse) facing arrow.} It is
+suggested to use \code{'forward_arrow'}}
 \item{length}{The length of the insertion}
 \item{in_tandem}{The number of copies of the insert in tandem}}
 The columns \strong{in_tandem, colour and shape are all optional}. If you
 don't supply them, then default values will be added as follows: \describe{
 \item{in_tandem}{1 (only one copy inserted)}
 \item{colour}{a colour allocated from \code{\link{rich_colours}}}
-\item{shape}{\code{"forward_arrow"}}}
+\item{shape}{\code{'forward_arrow'}}}
 }
 
 \section{Warning}{
@@ -163,15 +169,15 @@ colours may not be correct.
 ## one insertion with 4 tandem copies
 ## the data as a data.frame
 exampleins <- data.frame(
-chr="chr12", start=70905597, end=70917885, name="plasmid",
-colour="#7270ea", length=12000, in_tandem=11, shape="forward_arrow",
+chr='chr12', start=70905597, end=70917885, name='plasmid',
+colour='#7270ea', length=12000, in_tandem=11, shape='forward_arrow',
 stringsAsFactors=FALSE)
 
 ## or we can supply it as GRanges (same thing)
 exampleins <- GRanges(
-seqnames="chr12", ranges=IRanges(start=70905597, end=70917885),
-name="plasmid", colour="#7270ea", length=12000, in_tandem=11,
-shape="forward_arrow")
+seqnames='chr12', ranges=IRanges(start=70905597, end=70917885),
+name='plasmid', colour='#7270ea', length=12000, in_tandem=11,
+shape='forward_arrow')
 
 ## plot it
 insertionDiagram(exampleins, either_side=c(70855503, 71398284))
@@ -189,14 +195,14 @@ insertionDiagram(exampleins, either_side=c(70855503, 71398284), style=4)
 ## 2 different insertions
 ## the data
 example2ins <- data.frame(
-chr=c("chr12", "chr12"), start=c(70905597, 70705597),
-end=c(70917885, 70717885), name=c("plasmid1", "plasmid2"),
-colour=c("#7270ea", "#ea7082"), length=c(12000, 10000),
-in_tandem=c(4, 8), shape=c("reverse_arrow", "forward_arrow"),
+chr=c('chr12', 'chr12'), start=c(70905597, 70705597),
+end=c(70917885, 70717885), name=c('plasmid1', 'plasmid2'),
+colour=c('#7270ea', '#ea7082'), length=c(12000, 10000),
+in_tandem=c(4, 8), shape=c('reverse_arrow', 'forward_arrow'),
 stringsAsFactors=FALSE)
 
 ## plot it
-insertionDiagram(example2ins, link_colour="#ffe677", start_degree=45)
+insertionDiagram(example2ins, link_colour='#ffe677', start_degree=45)
 }
 \seealso{
 \code{\link{featureDiagram}} for a more flexible function

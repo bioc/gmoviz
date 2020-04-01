@@ -111,8 +111,6 @@ BiocManager::install("gmoviz")
 To install the development version of `gmoviz` from GitHub, type in the R 
 console:
 ```r
-if (!require("BiocManager"))
-    install.packages("BiocManager")
 BiocManager::install("malhamdoosh/gmoviz")
 ```
 
@@ -123,27 +121,27 @@ BiocManager::install("malhamdoosh/gmoviz")
 
 * `r CRANpkg("circlize")` provides the lower-level functions used to generate
 the circular plots. To install it, type in the R console: 
-`install.packages("circlize")`
+```r
+BiocManager::install("circlize")
+```
 
 * `r Biocpkg("GenomicRanges")` and `r Biocpkg("IRanges")` are required for the 
 GRanges data structure that is used to store information for plotting. To 
 install them, type in the R console: 
 ```r
-if (!require("BiocManager"))
-    install.packages("BiocManager")
 BiocManager::install(c("GenomicRanges", "IRanges"))
 ```
 
 * `r CRANpkg("gridBase")` faciliates the use of the circular plots (which are
 generated using base graphics) with the grid graphics system. To install it, 
 type in the R console:
-`install.packages("gridBase")`
+```r
+BiocManager::install("gridBase")
+```
 
 * `r Biocpkg("ComplexHeatmap")` is used to generate legends. To install it, 
 type in the R console:
 ```r
-if (!require("BiocManager"))
-    install.packages("BiocManager")
 BiocManager::install("ComplexHeatmap")
 ```
 
@@ -151,44 +149,36 @@ BiocManager::install("ComplexHeatmap")
 names, lengths and coverage from _.bam_ files. To install it, type in the R 
 console: 
 ```r
-if (!require("BiocManager"))
-    install.packages("BiocManager")
 BiocManager::install("Rsamtools")
 ```
 
 * `r Biocpkg("Biostrings")` is used to read information about the sequence
 names and lengths from _.fasta_ files. To install it, type in the R console: 
 ```r
-if (!require("BiocManager"))
-    install.packages("BiocManager")
 BiocManager::install("Biostrings")
 ```
 
 * `r Biocpkg("rtracklayer")` is used to read information on genomic features 
 from _.gff_ files. To install it, type in the R console: 
 ```r
-if (!require("BiocManager"))
-    install.packages("BiocManager")
 BiocManager::install("rtracklayer")
 ```
 
 * `r CRANpkg("pracma")` is used to apply moving-average smoothing to the 
 coverage data. To install it, type in the R console: 
-`install.packages("pracma")`
+```r
+BiocManager::install("pracma")
+```
 
 * `r Biocpkg("BiocGenerics")` is used to support the many Bioconductor data
 structures and functions used in `gmoviz` To install it, type in the R console: 
 ```r
-if (!require("BiocManager"))
-    install.packages("BiocManager")
 BiocManager::install("BiocGenerics")
 ```
 * `r Biocpkg("GenomeInfoDb")` and `r Biocpkg("GenomicAlignments")` are used to 
 read in the coverage data from _.bam_ files. To install them, type in the 
 R console: 
 ```r
-if (!require("BiocManager"))
-    install.packages("BiocManager")
 BiocManager::install(c("GenomeInfoDb", "GenomicAlignments"))
 ```
 

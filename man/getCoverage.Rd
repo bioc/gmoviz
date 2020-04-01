@@ -36,25 +36,25 @@ format it appropriately for plotting with gmoviz.
 }
 \examples{
 ## the example .bam file
-path <- system.file("extdata", "ex1.bam", package="Rsamtools")
+path <- system.file('extdata', 'ex1.bam', package='Rsamtools')
 
 ## example without smoothing or windowing
-getCoverage(regions_of_interest="seq1", bam_file=path)
+getCoverage(regions_of_interest='seq1', bam_file=path)
 
 ## using windowing
-getCoverage(regions_of_interest="seq1", bam_file=path, window_size=5)
+getCoverage(regions_of_interest='seq1', bam_file=path, window_size=5)
 
 ## using smoothing
-getCoverage(regions_of_interest="seq1", bam_file=path,
+getCoverage(regions_of_interest='seq1', bam_file=path,
 smoothing_window_size=3)
 
 ## specifying only a particular region to read in using GRanges
-small_range <- GRanges("seq1", IRanges(0, 500))
+small_range <- GRanges('seq1', IRanges(0, 500))
 getCoverage(regions_of_interest=small_range, bam_file=path)
 ## please be very careful that the sequence names are spelled exactly like
 ## in the bam file or you'll get an error! The following WON'T WORK.
 \dontrun{
-getCoverage(regions_of_interest="chr1", bam_file=path)}
+getCoverage(regions_of_interest='chr1', bam_file=path)}
 
 }
 \seealso{

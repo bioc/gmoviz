@@ -22,24 +22,12 @@ framework.
 
 ### Installation
 
-#### Install from Bioconductor
-
 As soon as `gmoviz` is available in the [Bioconductor](http://bioconductor.org/)
 project, it can be installed from R console as follows:
 ```r
 if (!require("BiocManager"))
     install.packages("BiocManager")
 BiocManager::install("gmoviz")
-```
-
-#### Install from Azure DevOps
-
-To install the development version of `gmoviz`
-from Azure DevOps, type the following commands in R Console:
-```r
-if (!require("BiocManager"))
-    install.packages("BiocManager")
-BiocManager::install("path to gmoviz")
 ```
 
 ## Quick start

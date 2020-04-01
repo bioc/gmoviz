@@ -51,8 +51,8 @@ using point_bicolour_cutoff then this should be a vector with two elements.}
 
 \item{yaxis_location}{Sector the y axis is drawn on.}
 
-\item{yaxis_side}{Side of the sector the y axis is on; either \code{"left"}
-or \code{"right"}.}
+\item{yaxis_side}{Side of the sector the y axis is on; either \code{'left'}
+or \code{'right'}.}
 
 \item{yaxis_colour}{Colour of the y axis.}
 
@@ -69,13 +69,13 @@ initialised the circular plot (by \code{\link{gmovizInitialise}} first).
 }
 \examples{
 ## you must initialise first!
-small_ideo <- data.frame(chr=c("region 1", "region 2", "region 3"),
+small_ideo <- data.frame(chr=c('region 1', 'region 2', 'region 3'),
                          start=c(0, 0, 0), end=c(10000, 12000, 10000))
 gmovizInitialise(small_ideo, custom_sector_width=c(0.3, 0.3, 0.3))
 
 ## make the data
 smallplot_data <- data.frame(
-chr = sample(c("region 1", "region 2","region 3"), size=40, replace=TRUE),
+chr = sample(c('region 1', 'region 2','region 3'), size=40, replace=TRUE),
 start = seq(0, 10000, length.out=40), end = seq(0, 10000, length.out=40),
 val = rnorm(40, 2, 0.5))
 
@@ -84,8 +84,8 @@ drawScatterplotTrack(smallplot_data)
 
 ## scatterplot with bi-colour cutoff of 2
 drawScatterplotTrack(smallplot_data, point_bicolour_cutoff=2,
-                     point_colour=c("red", "blue"),
-                     point_outline_colour=c("black", "black"))
+                     point_colour=c('red', 'blue'),
+                     point_outline_colour=c('black', 'black'))
 }
 \seealso{
 \code{\link{gmovizInitialise}}, which must be used to initialise

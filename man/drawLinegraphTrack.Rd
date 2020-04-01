@@ -39,8 +39,8 @@ line. Set this to NULL if you just want the line rather than the area.}
 
 \item{yaxis_tick_size}{Size of the ticks on the y axis.}
 
-\item{yaxis_side}{Side of the sector the y axis is on; either \code{"left"}
-or \code{"right"}.}
+\item{yaxis_side}{Side of the sector the y axis is on; either \code{'left'}
+or \code{'right'}.}
 
 \item{yaxis_colour}{Colour of the y axis.}
 
@@ -59,20 +59,20 @@ initialised the circular plot (by \code{\link{gmovizInitialise}} first).
 }
 \examples{
 ## you must initialise first!
-small_ideo <- data.frame(chr=c("region 1", "region 2", "region 3"),
+small_ideo <- data.frame(chr=c('region 1', 'region 2', 'region 3'),
                          start=c(0, 0, 0), end=c(10000, 12000, 10000))
 gmovizInitialise(small_ideo, custom_sector_width=c(0.3, 0.3, 0.3))
 
 ## make the data
 smallplot_data <- data.frame(
-chr = sample(c("region 1", "region 2","region 3"), size=300, replace=TRUE),
+chr = sample(c('region 1', 'region 2','region 3'), size=300, replace=TRUE),
 start = seq(0, 10000, length.out=300), end = seq(0, 10000, length.out=300),
 val = rnorm(300, 2, 0.5))
 ## line graph with no shading (just the line)
 drawLinegraphTrack(smallplot_data, line_shade_colour=NULL)
 
 ## line graph with shading (a filled in shape)
-drawLinegraphTrack(smallplot_data, line_shade_colour="#db009599")
+drawLinegraphTrack(smallplot_data, line_shade_colour='#db009599')
 }
 \seealso{
 \code{\link{gmovizInitialise}}, which must be used to initialise

@@ -33,8 +33,8 @@ colour-coded labels).}
 track.}
 
 \item{scatterplot_legend_labels}{A vector of the name/description of each
-point e.g. if a point represents methylation, use "methylation". If we have
-red/blue points for copy number gain/loss use c("gain", "loss").}
+point e.g. if a point represents methylation, use 'methylation'. If we have
+red/blue points for copy number gain/loss use c('gain', 'loss').}
 
 \item{point_type, point_colour, point_outline_colour}{The type and colour of
 points, as supplied to the \code{\link{drawScatterplotTrack}} function.}
@@ -44,7 +44,7 @@ points, as supplied to the \code{\link{drawScatterplotTrack}} function.}
 \item{linegraph_legend}{Whether to plot a legend for a line graph track.}
 
 \item{linegraph_legend_labels}{A vector of label(s) for what the line graph
-means (e.g. \code{"Per Base Coverage"} for a line graph track showing
+means (e.g. \code{'Per Base Coverage'} for a line graph track showing
 coverage).}
 
 \item{linegraph_legend_colours}{The colour of to the line graph track.}
@@ -64,9 +64,9 @@ then be plotted using the \code{\link{gmovizPlot}} function.
 \examples{
 ## a gene label legend
 ## the data
-labels <- data.frame(chr=c("chr1", "chr1"), start=c(100, 300),
-end=c(150, 350), label=c("a", "b"), type=c("gene", "lncRNA"),
-colour=c("red", "blue"))
+labels <- data.frame(chr=c('chr1', 'chr1'), start=c(100, 300),
+end=c(150, 350), label=c('a', 'b'), type=c('gene', 'lncRNA'),
+colour=c('red', 'blue'))
 
 ## making the legend
 makeLegends(label_legend=TRUE, label_data=labels)

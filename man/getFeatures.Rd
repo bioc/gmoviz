@@ -4,8 +4,7 @@
 \alias{getFeatures}
 \title{Generate a GRanges containing 'features' from .gff files}
 \usage{
-getFeatures(gff_file, colours = gmoviz::nice_colours,
-  colour_by_type = TRUE)
+getFeatures(gff_file, colours = nice_colours, colour_by_type = TRUE)
 }
 \arguments{
 \item{gff_file}{Location of the gff file to read in.}
@@ -30,7 +29,7 @@ which can then be plotted with the \code{\link{featureDiagram}} or
 }
 \examples{
 ## the example .gff
-path <- system.file("extdata", "example.gff3", package="gmoviz")
+path <- system.file('extdata', 'example.gff3', package='gmoviz')
 
 ## coloured by type
 getFeatures(path)

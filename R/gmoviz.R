@@ -177,6 +177,9 @@ getCoverage <- function(regions_of_interest, bam_file,
 #' @param wanted_chr If supplied, only these sequences will be read in
 #' @param just_pattern If supplied, this pattern (regex) will be used to select
 #' the sequences to read in
+#' @param add_chr If \code{TRUE}, 'chr' will be added to the start of sequence
+#' names with one or two characters (e.g. X will become chrX and 10 will become
+#' chr10 but plasmid will remain as-is)
 #'
 #' @export
 #' @importFrom Biostrings readDNAStringSet
@@ -225,7 +228,7 @@ getCoverage <- function(regions_of_interest, bam_file,
 
 getIdeogramData <- function(bam_file = NULL, fasta_file = NULL,
     fasta_folder = NULL, just_pattern = NULL, unwanted_chr = NULL,
-    wanted_chr = NULL) {
+    wanted_chr = NULL, add_chr = TRUE) {
     ## check the inputs
     stopifnot(exprs = {
         methods::is(bam_file, "character") | is.null(bam_file)
@@ -326,8 +329,11 @@ getIdeogramData <- function(bam_file = NULL, fasta_file = NULL,
                 length(names(fasta))), end = BiocGenerics::width(fasta)))
     }
 
-    GenomeInfoDb::seqlevels(ideogram_data) <- as.character(
-        .addChrToNumber(GenomeInfoDb::seqlevels(ideogram_data)))
+    if (add_chr == TRUE) {
+        GenomeInfoDb::seqlevels(ideogram_data) <- as.character(
+            .addChrToNumber(GenomeInfoDb::seqlevels(ideogram_data)))
+    }
+
     return(ideogram_data)
 }
 
@@ -368,7 +374,7 @@ getIdeogramData <- function(bam_file = NULL, fasta_file = NULL,
 #' ## not coloured by type (each uniquely named feature gets its own colour)
 #' getFeatures(path, colour_by_type=FALSE)
 
-getFeatures <- function(gff_file, colours = gmoviz::nice_colours,
+getFeatures <- function(gff_file, colours = nice_colours,
     colour_by_type = TRUE) {
     ## check the inputs
     stopifnot(exprs = {
@@ -565,6 +571,10 @@ getLabels <- function(gff_file, colour_code = TRUE,
 #' @param xaxis_spacing Space between the x axis labels, in degrees.
 #' Alternatively, the string 'start_end' will place a label at the start and
 #' end of each sector only.
+#' @param xaxis_spacing_unit Either \code{"deg"} to draw ticks every certain
+#' number of degrees around the circle or \code{"bp"} to draw ticks every
+#' certain bp around the circle (be warned that when the scales for each sector
+#' are very different, it's best to use \code{"deg"})
 #' @param xaxis_orientation Either \code{'top'} to put the x axis on the
 #' outside of the circle or \code{'bottom'} to put it on the inside.
 #' @param xaxis_label_size Size of the x axis labels.
@@ -595,7 +605,9 @@ getLabels <- function(gff_file, colour_code = TRUE,
 #' @param custom_ylim A vector of length two containing the y (coverage) axis
 #' limits. No need to set if not using coverage rectangles or if you're happy
 #' with the default: c(0, maximum coverage).
-#'
+#' @param sort_sectors If \code{TRUE}, the sectors will be plotted around the
+#' circle in alphabetical order. Otherwise, they will be in the order in which
+#' they appear in \code{ideogram_data}
 #' @export
 #' @import circlize
 #'
@@ -641,10 +653,10 @@ gmovizInitialise <- function(ideogram_data, start_degree = 90,
     coverage_data = NULL, custom_ylim = NULL, sector_labels = TRUE,
     sector_label_size = 0.9, sector_label_colour = "black",
     xaxis = TRUE, xaxis_orientation = "top", xaxis_label_size = 0.75,
-    xaxis_colour = "#747577", xaxis_spacing = 10,
+    xaxis_colour = "#747577", xaxis_spacing = 10, xaxis_spacing_unit = "deg",
     label_data = NULL, label_colour = "black",
     label_size = 0.85, space_between_labels = 0.4,
-    label_orientation = "outside") {
+    label_orientation = "outside", sort_sectors = TRUE) {
     ## check the the data
     ideogram_data <- .checkIdeogramData(ideogram_data)
     if (!is.null(coverage_rectangle) & !is.null(coverage_data)) {
@@ -679,8 +691,8 @@ gmovizInitialise <- function(ideogram_data, start_degree = 90,
         xaxis_orientation %in% c("top", "bottom")
         xaxis_label_size >= 0
         (methods::is(xaxis_spacing, "numeric") &
-            xaxis_spacing > 0 & xaxis_spacing <
-            360) | xaxis_spacing == "start_end"
+            xaxis_spacing > 0 | xaxis_spacing == "start_end")
+        xaxis_spacing_unit %in% c("deg", "bp")
         methods::is(label_colour, "character")
         label_size >= 0
         space_between_labels > 0 & space_between_labels <
@@ -713,8 +725,13 @@ gmovizInitialise <- function(ideogram_data, start_degree = 90,
             sort.chr = FALSE)
         ## regular plotting
     } else {
-        circos.initializeWithIdeogram(ideogram_data,
-            plotType = NULL)
+        if (sort_sectors == TRUE){
+            circos.initializeWithIdeogram(ideogram_data, plotType = NULL)
+        } else {
+            circos.initializeWithIdeogram(ideogram_data, plotType = NULL,
+                                          sort.chr = FALSE)
+        }
+
     }
 
     ## plot labels, if needed
@@ -739,7 +756,8 @@ gmovizInitialise <- function(ideogram_data, start_degree = 90,
 
     if (!is.null(xaxis_colour)) {
         .plotXaxis(xaxis, xaxis_label_size, xaxis_colour,
-            xaxis_spacing, sectors = as.character(ideogram_data$chr))
+            xaxis_spacing, sectors = as.character(ideogram_data$chr),
+            xaxis_spacing_unit = xaxis_spacing_unit)
     }
 }
 
@@ -1037,6 +1055,9 @@ drawLinegraphTrack <- function(plot_data, track_border_colour = "black",
 #' outermost track (track 0), please fill these in the same as in your
 #' \code{gmovizInitialise} function call. \strong{Otherwise, there is no need
 #' to supply these}.
+#' @param feature_outline Should a black outline be drawn around the feature
+#' shape? (It is recommended to set this to \code{FALSE} when dealing with
+#' very small features)
 #' @param internal For internal use only.
 #'
 #' @section Feature data format:
@@ -1110,14 +1131,14 @@ drawFeatureTrack <- function(feature_data, flipped_sector = NULL,
     feature_label_cutoff = 50, track_height = 0.1,
     feature_label_size = 0.9, label_track_height = 0.1 *
         feature_label_size, coverage_rectangle = NULL,
-    coverage_data = NULL, internal = FALSE) {
+    coverage_data = NULL, internal = FALSE, feature_outline = TRUE) {
 
     ## check inputs
     feature_data <- .checkFeatureData(feature_data)
     stopifnot(exprs = {
         is.null(flipped_sector) | methods::is(flipped_sector,
             "character")
-        feature_label_cutoff > 0
+        #feature_label_cutoff >= 0
         feature_label_size > 0
         track_height > 0 & track_height < 1
         label_track_height > 0 & label_track_height <
@@ -1219,6 +1240,8 @@ drawFeatureTrack <- function(feature_data, flipped_sector = NULL,
                     circos.arrow(x_start, x_end,
                         arrow.head.width = CELL_META$ylim[2] *
                             0.8, col = this_track_features$colour[j],
+                        border = ifelse(feature_outline, "black",
+                                        this_track_features$colour[j]),
                         arrow.position = arrow_position,
                         sector.index = this_track_features$chr[j])
 
@@ -1227,6 +1250,8 @@ drawFeatureTrack <- function(feature_data, flipped_sector = NULL,
                   circos.rect(
                     ybottom = (CELL_META$ylim[1] + (0.27 * CELL_META$ylim[2])),
                     xleft = x_start,
+                    border = ifelse(feature_outline, "black",
+                                        this_track_features$colour[j]),
                     ytop = (CELL_META$ylim[1] + (0.75 * CELL_META$ylim[2])),
                     xright = x_end, col = this_track_features$colour[j],
                     sector.index = this_track_features$chr[j])
@@ -1251,6 +1276,8 @@ drawFeatureTrack <- function(feature_data, flipped_sector = NULL,
                       y = c(y_midpoint, triangle_apex_y,
                           y_midpoint, y_midpoint),
                       col = this_track_features$colour[[j]],
+                      border = ifelse(feature_outline, "black",
+                                        this_track_features$colour[j]),
                       sector.index = this_track_features$chr[[j]])
                 } else {
                   stop("the 'shape' column should be one of 'rectangle',
@@ -1275,42 +1302,45 @@ drawFeatureTrack <- function(feature_data, flipped_sector = NULL,
         this_track_features <- subset(feature_data,
             feature_data$track == i)
         for (j in seq_along(this_track_features$label)) {
-            if (this_track_features$chr[j] %in%
-                get.all.sector.index()) {
-                ## adjust position if the sector has been
-                ## flipped
-                if (as.character(this_track_features$chr[j]) %in%
-                    flipped_sector) {
-                    x_start <- .reverseXaxis(this_track_features$end[j])
-                    x_end <- .reverseXaxis(this_track_features$start[j])
+            if (this_track_features$label[j] != "") {
+                if (this_track_features$chr[j] %in% get.all.sector.index()) {
+                    ## adjust position if the sector has been flipped
+                    if (as.character(this_track_features$chr[j]) %in%
+                        flipped_sector) {
+                        x_start <- .reverseXaxis(this_track_features$end[j])
+                        x_end <- .reverseXaxis(this_track_features$start[j])
 
-                } else {
-                    x_start <- this_track_features$start[j]
-                    x_end <- this_track_features$end[j]
-                }
+                    } else {
+                        x_start <- this_track_features$start[j]
+                        x_end <- this_track_features$end[j]
+                    }
 
-                ## plot the text
-                this_track <- outer_index + this_track_features$track[1]
-                if (this_track_features$end[j] -
-                    this_track_features$start[j] <= feature_label_cutoff) {
-                  ## if the shape is small, plot the label on the
-                  ## next track
-                  .plotNewTrackText(label = this_track_features$label[[j]],
-                      x_start = x_start, x_end = x_end,
-                      this_track = this_track,
-                      sector_index = this_track_features$chr[[j]],
-                      feature_label_size = feature_label_size,
-                      label_track_height = label_track_height,
-                      max_track = max(feature_data$track) + outer_index)
-                } else {
-                    ## otherwise, the label should go inside the
-                    ## shape
-                    circos.text(x = ((x_start + x_end)/2),
-                        y = mean(CELL_META$ylim),
-                        labels = as.character(this_track_features$label[j]),
-                        facing = "bending.outside", cex = feature_label_size,
-                        track.index = this_track, niceFacing = TRUE,
-                        sector.index = this_track_features$chr[[j]])
+                    ## plot the text
+                    this_track <- outer_index + this_track_features$track[1]
+                    if (this_track_features$end[j] -
+                        this_track_features$start[j] <= feature_label_cutoff) {
+                        ## if the shape is small, plot the label on the
+                        ## next track
+                        .plotNewTrackText(
+                            label = this_track_features$label[[j]],
+                            x_start = x_start, x_end = x_end,
+                            this_track = this_track,
+                            sector_index = this_track_features$chr[[j]],
+                            feature_label_size = feature_label_size,
+                            label_track_height = label_track_height,
+                            max_track = max(feature_data$track) + outer_index)
+                    } else {
+                        ## otherwise, the label should go inside the shape
+                        circos.text(
+                            x = ((x_start + x_end)/2),
+                            y = mean(CELL_META$ylim),
+                            labels = as.character(
+                                this_track_features$label[j]),
+                            facing = "bending.outside",
+                            cex = feature_label_size,
+                            track.index = this_track, niceFacing = TRUE,
+                            sector.index = this_track_features$chr[[j]])
+                    }
                 }
             }
         }
@@ -1609,7 +1639,7 @@ insertionDiagram <- function(insertion_data, style = 1,
     sector_label_colour = "black", label_data = NULL,
     label_colour = "black", link_colour = "default",
     label_size = 1.1, xaxis = TRUE, xaxis_label_size = 0.9,
-    xaxis_colour = "#747577", xaxis_spacing = 10,
+    xaxis_colour = "#747577", xaxis_spacing = 10, xaxis_spacing_unit = "deg",
     link_ends = "default", track_height = 0.15,
     internal = FALSE) {
     ## check inputs
@@ -1637,8 +1667,8 @@ insertionDiagram <- function(insertion_data, style = 1,
         methods::is(label_colour, "character")
         label_size >= 0
         (methods::is(xaxis_spacing, "numeric") &
-            xaxis_spacing > 0 & xaxis_spacing <
-            360) | xaxis_spacing == "start_end"
+            xaxis_spacing > 0 | xaxis_spacing == "start_end")
+        xaxis_spacing_unit %in% c("deg", "bp")
         link_ends == "default" | (length(link_ends) ==
             2 & methods::is(link_ends, "numeric"))
         track_height > 0 & track_height < 1
@@ -1794,7 +1824,8 @@ insertionDiagram <- function(insertion_data, style = 1,
             sector_colours[-1], sector_border_colours[-1],
             sector_labels, sector_label_size, sector_label_colour)
         .plotXaxis(xaxis, xaxis_label_size, xaxis_colour,
-            xaxis_spacing, sectors = inserted_sequence)
+            xaxis_spacing, sectors = inserted_sequence,
+            xaxis_spacing_unit = xaxis_spacing_unit)
 
         ## insertions (features)
         drawFeatureTrack(feature_data, feature_label_cutoff = 5,
@@ -1807,7 +1838,8 @@ insertionDiagram <- function(insertion_data, style = 1,
             sector_colours[1], sector_border_colours[1],
             sector_labels, sector_label_size, sector_label_colour)
         .plotXaxis(xaxis, xaxis_label_size, xaxis_colour,
-            xaxis_spacing, sectors = original_sequence)
+            xaxis_spacing, sectors = inserted_sequence,
+            xaxis_spacing_unit = xaxis_spacing_unit)
 
     } else if (style == 2) {
         ## outer box for original sequence
@@ -1819,7 +1851,8 @@ insertionDiagram <- function(insertion_data, style = 1,
             sector_colours[1], sector_border_colours[1],
             sector_labels, sector_label_size, sector_label_colour)
         .plotXaxis(xaxis, xaxis_label_size, xaxis_colour,
-            xaxis_spacing, sectors = original_sequence)
+            xaxis_spacing, sectors = inserted_sequence,
+            xaxis_spacing_unit = xaxis_spacing_unit)
 
         ## inner box for insertion(s)
         .plotNewTrack(inserted_sequence, custom_ylim,
@@ -1830,7 +1863,8 @@ insertionDiagram <- function(insertion_data, style = 1,
             sector_colours[-1], sector_border_colours[-1],
             sector_labels, sector_label_size, sector_label_colour)
         .plotXaxis(xaxis, xaxis_label_size, xaxis_colour,
-            xaxis_spacing, sectors = inserted_sequence)
+            xaxis_spacing, sectors = inserted_sequence,
+            xaxis_spacing_unit = xaxis_spacing_unit)
 
         ## insertions (features)
         drawFeatureTrack(feature_data, feature_label_cutoff = 5,
@@ -1855,7 +1889,8 @@ insertionDiagram <- function(insertion_data, style = 1,
             sector_colours[1], sector_border_colours[1],
             sector_labels, sector_label_size, sector_label_colour)
         .plotXaxis(xaxis, xaxis_label_size, xaxis_colour,
-            xaxis_spacing, sectors = original_sequence)
+            xaxis_spacing, sectors = inserted_sequence,
+            xaxis_spacing_unit = xaxis_spacing_unit)
 
     } else if (style == 4) {
         ## outer box for original sequence
@@ -1867,7 +1902,8 @@ insertionDiagram <- function(insertion_data, style = 1,
             sector_colours[1], sector_border_colours[1],
             sector_labels, sector_label_size, sector_label_colour)
         .plotXaxis(xaxis, xaxis_label_size, xaxis_colour,
-            xaxis_spacing, sectors = original_sequence)
+            xaxis_spacing, sectors = inserted_sequence,
+            xaxis_spacing_unit = xaxis_spacing_unit)
 
         ## insertions (features)
         drawFeatureTrack(feature_data, feature_label_cutoff = 5,
@@ -1927,16 +1963,18 @@ featureDiagram <- function(ideogram_data, feature_data,
     start_degree = 180, coverage_rectangle = NULL,
     coverage_data = NULL, custom_sector_width = NULL,
     space_between_sectors = 4, flipped_sector = NULL,
-    sector_colours = nice_colours, sector_border_colours = nice_colours,
+    sector_colours = nice_colours, 
+    sector_border_colours = nice_colours,
     sector_labels = TRUE, sector_label_size = 1.3,
     sector_label_colour = "black", label_data = NULL,
     label_size = 1.1, label_colour = "black", xaxis = TRUE,
     xaxis_label_size = 0.9, xaxis_colour = "#747577",
-    xaxis_spacing = 10, feature_label_cutoff = 50,
+    xaxis_spacing = 10, feature_label_cutoff = 50, xaxis_spacing_unit = "deg",
     track_height = 0.1, feature_label_size = 0.9,
     link_data = NULL, link_colour = "#84c6d6",
     link_ends = "default", custom_ylim = NULL,
-    label_track_height = 0.1 * feature_label_size) {
+    label_track_height = 0.1 * feature_label_size,
+    feature_outline = TRUE) {
     ## check data
     feature_data <- .checkFeatureData(feature_data)
     ideogram_data <- .checkIdeogramData(ideogram_data)
@@ -1963,8 +2001,8 @@ featureDiagram <- function(ideogram_data, feature_data,
         methods::is(label_colour, "character")
         xaxis_label_size >= 0
         (methods::is(xaxis_spacing, "numeric") &
-            xaxis_spacing > 0 & xaxis_spacing <
-            360) | xaxis_spacing == "start_end"
+            xaxis_spacing > 0 | xaxis_spacing == "start_end")
+        xaxis_spacing_unit %in% c("deg", "bp")
         feature_label_cutoff > 0
         track_height > 0 & track_height < 1
         feature_label_size >= 0
@@ -2016,7 +2054,8 @@ featureDiagram <- function(ideogram_data, feature_data,
         .plotXaxis(xaxis, xaxis_label_size = xaxis_label_size,
             xaxis_colour = xaxis_colour, xaxis_spacing = xaxis_spacing,
             flipped_sector = flipped_sector,
-            sectors = as.character(ideogram_data$chr))
+            sectors = as.character(ideogram_data$chr),
+            xaxis_spacing_unit = xaxis_spacing_unit)
     }
 
     ## add link if needed (needs to be done now so
@@ -2053,7 +2092,7 @@ featureDiagram <- function(ideogram_data, feature_data,
         feature_label_size = feature_label_size,
         label_track_height = label_track_height,
         coverage_rectangle = coverage_rectangle,
-        internal = TRUE)
+        internal = TRUE, feature_outline = feature_outline)
 }
 #' @title Generate an entire circular plot
 #'

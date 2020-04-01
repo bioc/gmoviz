@@ -178,7 +178,8 @@
 ## helper function to plot an appropriate x axis
 .plotXaxis <- function(
     xaxis = TRUE, xaxis_label_size=0.35, xaxis_colour="#747577",
-    xaxis_spacing=10, flipped_sector=FALSE, sectors=get.all.sector.index(),
+    xaxis_spacing=10, xaxis_spacing_unit = c("deg", "bp"),
+    flipped_sector=FALSE, sectors=get.all.sector.index(),
     track_index=get.cell.meta.data("track.index"))
 {
     if (xaxis == FALSE){ # if not plotting an xaxis stop here
@@ -193,6 +194,14 @@
         spacing_angle <- 360
     } else {
         spacing_angle <- xaxis_spacing
+    }
+
+    ## if we're setting our xaxis_spacing as bp rather than as degrees, then
+    ## find the appropriate degree from the bp value:
+    if (xaxis_spacing_unit == "bp") {
+        first_tick_bp <- CELL_META$xlim[1] + xaxis_spacing
+        first_tick_degree <- circlize(first_tick_bp, CELL_META$ylim[1])[1]
+        spacing_angle <- abs(CELL_META$cell.start.degree - first_tick_degree)
     }
 
     units <- c("bp" = 0, "kb" = 1, "mb" = 2, "gb" = 3)

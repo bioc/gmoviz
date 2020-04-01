@@ -406,7 +406,7 @@ function.
 ```{r getFeatures}
 features <- getFeatures(
   gff_file = system.file("extdata", "example.gff3", package = "gmoviz"), 
-  colours = rich_colours)
+  colours = gmoviz::rich_colours)
 ```
 Here, we have set the `colours` parameter to `rich_colours`, one of the five
 colour sets provided by `gmoviz` (see [here](#colours) for a description of 
@@ -445,7 +445,7 @@ plasmid_ideogram <- GRanges("plasmid", IRanges(start = 0, end = 3000))
 plasmid_features <- getFeatures(
   gff_file = system.file("extdata", "plasmid.gff3", package="gmoviz"),
   colour_by_type = FALSE, # colour by name rather than type of feature
-  colours = rich_colours) # choose colours from rich_colours (see ?colourSets)
+  colours = gmoviz::rich_colours) # choose colours from rich_colours (see ?colourSets)
 
 ## the plot
 featureDiagram(plasmid_ideogram, plasmid_features, track_height = 0.17)

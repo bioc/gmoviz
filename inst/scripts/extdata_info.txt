@@ -1,0 +1,15 @@
+Information about the data found in inst/extdata:
+
+ * extdata/fastaFolder: contains 2 fasta files (HSBGPG.fasta & HSGLTH1.fasta)
+   which are taken from http://www.cbs.dtu.dk/services/NetAspGene/fasta.php
+   
+ * example.gff3: a made-up set of features. File format taken from
+   https://uswest.ensembl.org/info/website/upload/gff3.html
+   
+ * complex_insertion.gff3: a made-up set of features, based on typical features
+   found in a CRISPR design. File format taken from
+   https://uswest.ensembl.org/info/website/upload/gff3.html
+   
+ * plasmid.gff3: a made-up set of features, based on typical features found in 
+   a plasmid. File format taken from 
+   https://uswest.ensembl.org/info/website/upload/gff3.html  

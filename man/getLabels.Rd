@@ -29,7 +29,7 @@ package such as \code{\link{gmovizInitialise}},
 }
 \examples{
 ## example .gff
-path <- system.file("extdata", "example.gff3", package="gmoviz")
+path <- system.file('extdata', 'example.gff3', package='gmoviz')
 
 ## colour coded
 getLabels(path)

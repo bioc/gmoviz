@@ -6,7 +6,7 @@
 \usage{
 getIdeogramData(bam_file = NULL, fasta_file = NULL,
   fasta_folder = NULL, just_pattern = NULL, unwanted_chr = NULL,
-  wanted_chr = NULL)
+  wanted_chr = NULL, add_chr = TRUE)
 }
 \arguments{
 \item{bam_file, fasta_file, fasta_folder}{Location of either a .bam file,
@@ -22,6 +22,10 @@ the sequences to read in}
 \item{unwanted_chr}{If supplied, these sequences won't be read in}
 
 \item{wanted_chr}{If supplied, only these sequences will be read in}
+
+\item{add_chr}{If \code{TRUE}, 'chr' will be added to the start of sequence
+names with one or two characters (e.g. X will become chrX and 10 will become
+chr10 but plasmid will remain as-is)}
 }
 \value{
 A \linkS4class{GRanges} containing the ideogram data (sequence
@@ -33,29 +37,29 @@ format correctly for plotting with gmoviz.
 }
 \examples{
 ## the example .bam file
-path <- system.file("extdata", "ex1.bam", package="Rsamtools")
+path <- system.file('extdata', 'ex1.bam', package='Rsamtools')
 
-## just starting with "seq"
-getIdeogramData(bam_file=path, just_pattern="^seq")
+## just starting with 'seq'
+getIdeogramData(bam_file=path, just_pattern='^seq')
 
 ## only seq1
-getIdeogramData(bam_file=path, wanted_chr="seq1")
+getIdeogramData(bam_file=path, wanted_chr='seq1')
 
 ## not seq2 (same as above)
-getIdeogramData(bam_file=path, unwanted_chr="seq2")
+getIdeogramData(bam_file=path, unwanted_chr='seq2')
 
 ## you can mix and match any of the filters
-getIdeogramData(bam_file=path, unwanted_chr="seq2", just_pattern="^seq")
+getIdeogramData(bam_file=path, unwanted_chr='seq2', just_pattern='^seq')
 
 ## the function also works to read in individual .fasta files, but please
 ## note that for now the filters won't work (so if you have multiple
 ## sequences in one .fasta file then they will all be read in)
-path <- system.file("extdata", "someORF.fa", package="Biostrings")
+path <- system.file('extdata', 'someORF.fa', package='Biostrings')
 getIdeogramData(fasta_file=path)
 
 ## we can also read in selected .fasta files from a folder of .fasta files,
 ## based on the filters shown above for the .bam file
-path <- system.file("extdata", "fastaFolder", package="gmoviz")
+path <- system.file('extdata', 'fastaFolder', package='gmoviz')
 getIdeogramData(fasta_folder=path)
 }
 \seealso{

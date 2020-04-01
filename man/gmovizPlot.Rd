@@ -14,8 +14,8 @@ gmovizPlot(file_name, file_type = "png", plotting_functions,
 \arguments{
 \item{file_name}{The name of the file to be saved.}
 
-\item{file_type}{The type of image file to produce: either \code{"png"},
-\code{"svg"} or \code{"ps"}.}
+\item{file_type}{The type of image file to produce: either \code{'png'},
+\code{'svg'} or \code{'ps'}.}
 
 \item{plotting_functions}{The functions you want to plot (e.g.
 \code{\link{insertionDiagram}} or \code{\link{gmovizInitialise}}).}
@@ -30,7 +30,7 @@ gmovizPlot(file_name, file_type = "png", plotting_functions,
 \item{height}{Height of the image.}
 
 \item{units}{Units for the width and height of the image. One of
-\code{"mm"}, \code{"cm"} or \code{"in"} (inches).}
+\code{'mm'}, \code{'cm'} or \code{'in'} (inches).}
 
 \item{res}{Resolution of the image (only needed for .png files).}
 
@@ -56,18 +56,18 @@ optional title and legends) as either .png, .svg or .ps.
 }
 \examples{
 ## make some example data
-small_ideogram <- data.frame(chr=c("region 1", "region 2", "region 3"),
+small_ideogram <- data.frame(chr=c('region 1', 'region 2', 'region 3'),
 start=c(0, 0, 0), end=c(10000, 12000, 10000))
 small_plot_data <- data.frame(
-chr=sample(c("region 1", "region 2", "region 3"), size=40, replace=TRUE),
+chr=sample(c('region 1', 'region 2', 'region 3'), size=40, replace=TRUE),
 start=sample(0:10000, 40), end=sample(0:10000, 40),
 val=rnorm(40, 2, 0.5))
 
 ## plot it
 \dontrun{
-gmovizPlot("test.png", {
+gmovizPlot('test.png', {
 gmovizInitialise(small_ideogram, custom_sector_width=c(0.3, 0.3, 0.3))
-drawScatterplotTrack(small_plot_data)}, title="scatterplot")}
+drawScatterplotTrack(small_plot_data)}, title='scatterplot')}
 }
 \seealso{
 \code{\link{makeLegends}} for a function that generates the legend

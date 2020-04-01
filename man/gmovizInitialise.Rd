@@ -13,9 +13,11 @@ gmovizInitialise(ideogram_data, start_degree = 90,
   custom_ylim = NULL, sector_labels = TRUE, sector_label_size = 0.9,
   sector_label_colour = "black", xaxis = TRUE,
   xaxis_orientation = "top", xaxis_label_size = 0.75,
-  xaxis_colour = "#747577", xaxis_spacing = 10, label_data = NULL,
+  xaxis_colour = "#747577", xaxis_spacing = 10,
+  xaxis_spacing_unit = "deg", label_data = NULL,
   label_colour = "black", label_size = 0.85,
-  space_between_labels = 0.4, label_orientation = "outside")
+  space_between_labels = 0.4, label_orientation = "outside",
+  sort_sectors = TRUE)
 }
 \arguments{
 \item{ideogram_data}{Either a \linkS4class{GRanges} representing regions of
@@ -87,16 +89,21 @@ drawn for each sector (recommended).}
 
 \item{xaxis}{If \code{TRUE}, an x (genomic position) xaxis  will be plotted.}
 
-\item{xaxis_orientation}{Either \code{"top"} to put the x axis on the
-outside of the circle or \code{"bottom"} to put it on the inside.}
+\item{xaxis_orientation}{Either \code{'top'} to put the x axis on the
+outside of the circle or \code{'bottom'} to put it on the inside.}
 
 \item{xaxis_label_size}{Size of the x axis labels.}
 
 \item{xaxis_colour}{Colour of the x axis labels.}
 
 \item{xaxis_spacing}{Space between the x axis labels, in degrees.
-Alternatively, the string "start_end" will place a label at the start and
+Alternatively, the string 'start_end' will place a label at the start and
 end of each sector only.}
+
+\item{xaxis_spacing_unit}{Either \code{"deg"} to draw ticks every certain
+number of degrees around the circle or \code{"bp"} to draw ticks every
+certain bp around the circle (be warned that when the scales for each sector
+are very different, it's best to use \code{"deg"})}
 
 \item{label_data}{Data frame or \linkS4class{GRanges} containing the
 labels. If a GRanges, \code{label} should be a metadata column containing
@@ -116,8 +123,12 @@ labels (for colour-coding).}
 
 \item{space_between_labels}{Space between the labels}
 
-\item{label_orientation}{\code{"outside"} to put the labels on the
-outside of the circle, \code{"inside"} to put them on the inside.}
+\item{label_orientation}{\code{'outside'} to put the labels on the
+outside of the circle, \code{'inside'} to put them on the inside.}
+
+\item{sort_sectors}{If \code{TRUE}, the sectors will be plotted around the
+circle in alphabetical order. Otherwise, they will be in the order in which
+they appear in \code{ideogram_data}}
 }
 \value{
 Generates an image of the initial ideogram track which can then be
@@ -131,7 +142,7 @@ preparation for the addition of other tracks like
 }
 \examples{
 ## normal/standard usage
-ideogram <- data.frame(chr=paste0("chr", c(1:19, "X", "Y")),
+ideogram <- data.frame(chr=paste0('chr', c(1:19, 'X', 'Y')),
 start=rep(0, 21),
 end=c(195471971, 182113224, 160039680, 156508116, 151834684, 149736546,
 145441459, 129401213, 124595110, 130694993, 122082543, 120129022,
@@ -140,19 +151,19 @@ end=c(195471971, 182113224, 160039680, 156508116, 151834684, 149736546,
 gmovizInitialise(ideogram)
 
 ## zooming a sector
-gmovizInitialise(ideogram, zoom_sectors="chr19", zoom_size=0.2)
+gmovizInitialise(ideogram, zoom_sectors='chr19', zoom_size=0.2)
 
 ## custom sector width
-small_ideogram <- data.frame(chr=c("region 1", "region 2", "region 3"),
+small_ideogram <- data.frame(chr=c('region 1', 'region 2', 'region 3'),
 start=c(0, 0, 0), end=c(10000, 12000, 10000))
 gmovizInitialise(small_ideogram, custom_sector_width=c(0.3, 0.3, 0.3))
 
 ## coverage rectangle
-path <- system.file("extdata", "ex1.bam", package="Rsamtools")
-ideo <- getIdeogramData(path, wanted_chr="seq1")
-coverage <- getCoverage(bam_file=path, regions_of_interest="seq1",
+path <- system.file('extdata', 'ex1.bam', package='Rsamtools')
+ideo <- getIdeogramData(path, wanted_chr='seq1')
+coverage <- getCoverage(bam_file=path, regions_of_interest='seq1',
 window_size=30)
-gmovizInitialise(ideo, coverage_rectangle="seq1", coverage_data=coverage)
+gmovizInitialise(ideo, coverage_rectangle='seq1', coverage_data=coverage)
 }
 \seealso{
 The \code{\link{drawScatterplotTrack}},

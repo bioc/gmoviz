@@ -73,7 +73,7 @@ labels (for colour-coding).}
 \item{label_size}{Size of the labels.}
 
 \item{xaxis_spacing}{Space between the x axis labels, in degrees.
-Alternatively, the string "start_end" will place a label at the start and
+Alternatively, the string 'start_end' will place a label at the start and
 end of each sector only. Accepts only a single value which will be applied
 to all events.}
 }
@@ -95,25 +95,25 @@ events than this, please consider splitting them across two or more figures.
 \examples{
 ## the data
 ideogram_data <- GRanges(
-seqnames=paste0("chr", 1:6), ranges=IRanges(start=rep(0, 6),
+seqnames=paste0('chr', 1:6), ranges=IRanges(start=rep(0, 6),
  end=rep(12000, 6)))
 insertion_data <- GRanges(
-seqnames = c("chr1", "chr5"),
+seqnames = c('chr1', 'chr5'),
 ranges = IRanges(start = c(4000, 2000), end = c(4100, 2200)),
-name = c("ins1", "ins5"), length = c(100, 200))
+name = c('ins1', 'ins5'), length = c(100, 200))
 
 ## the plot
 multipleInsertionDiagram(insertion_data=insertion_data,
                          genome_ideogram_data=ideogram_data)
 ## with coverage and labels
-example_labels <- GRanges(seqnames=c("chr1", "chr5"),
+example_labels <- GRanges(seqnames=c('chr1', 'chr5'),
                           ranges=IRanges(start=c(4000, 2000),
                           end=c(4120, 2200)),
-                          label=c("Gene A", "Gene B"),
-                          colour=c("red", "blue"))
+                          label=c('Gene A', 'Gene B'),
+                          colour=c('red', 'blue'))
 
 example_coverage <- GRanges(
-seqnames = c(rep("chr1", 100), rep("chr5", 100)),
+seqnames = c(rep('chr1', 100), rep('chr5', 100)),
 ranges = IRanges(start=c(seq(4000, 4099, length.out=100),
                          seq(2000, 2199, length.out=100)),
                  end=c(seq(4001, 4100, length.out=100),
@@ -123,15 +123,15 @@ multipleInsertionDiagram(insertion_data=insertion_data,
                          genome_ideogram_data=ideogram_data,
                          label_data=example_labels,
                          label_colour=example_labels$colour,
-                         coverage_rectangle=c("chr1", "chr5"),
+                         coverage_rectangle=c('chr1', 'chr5'),
                          coverage_data=example_coverage)
 ## changing either_side and style
-either_side_GRange <- GRanges("chr5", IRanges(1000, 3200))
+either_side_GRange <- GRanges('chr5', IRanges(1000, 3200))
 multipleInsertionDiagram(insertion_data=insertion_data,
                          genome_ideogram_data=ideogram_data,
-                         style=c("ins1"=1, "ins5"=4),
-                         either_side=list("ins1"=500,
-                                            "ins5"=either_side_GRange))
+                         style=c('ins1'=1, 'ins5'=4),
+                         either_side=list('ins1'=500,
+                                            'ins5'=either_side_GRange))
 
 }
 \seealso{
