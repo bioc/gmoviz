@@ -2,7 +2,7 @@ Package: gmoviz
 Type: Package 
 Title: Seamless visualization of complex genomic variations in GMOs and
     edited cell lines
-Version: 0.99.6
+Version: 0.99.7
 Authors@R: c(
     person("Kathleen", "Zeglinski", email = "kathleen.zeglinski@csl.com.au", 
     role = c("cre", "aut")), 
@@ -29,8 +29,7 @@ biocViews:
 Depends: 
     circlize, 
     GenomicRanges, 
-    graphics, 
-    R (>= 4.0.0)
+    graphics
 Imports: 
     grid, 
     gridBase, 
