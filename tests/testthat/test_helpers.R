@@ -24,10 +24,10 @@ GRange_2 <- GRanges(c("chr1", "chr2", "chr3"),
                val1 = c(133, 144, 155), val2 = c("h", "i", "j"))
 dataframe_1 <- data.frame(chr = c("chr1", "chr2", "chr3"), start = c(0, 0, 0),
                   end = c(10000, 20000, 14000), stringsAsFactors = TRUE)
-dataframe_2 <- data.frame(chr = c("chr1", "chr2", "chr3"),
+dataframe_2 <- data.frame(chr = as.factor(c("chr1", "chr2", "chr3")),
                   start = c(0, 0, 0), end = c(10000, 20000, 14000),
                   val1 = c(133, 144, 155), val2 = c("h", "i", "j"),
-                  stringsAsFactors = TRUE)
+                  stringsAsFactors = FALSE)
 
 test_that("Converting GRanges to bed format data frame is working", {
   expect_equivalent(gmoviz:::.GRangesToBed(GRange_1, ideogram = TRUE),
