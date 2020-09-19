@@ -1837,7 +1837,7 @@ insertionDiagram <- function(insertion_data, style = 1,
             sector_colours[1], sector_border_colours[1],
             sector_labels, sector_label_size, sector_label_colour)
         .plotXaxis(xaxis, xaxis_label_size, xaxis_colour,
-            xaxis_spacing, sectors = inserted_sequence,
+            xaxis_spacing, sectors = original_sequence,
             xaxis_spacing_unit = xaxis_spacing_unit)
 
     } else if (style == 2) {
@@ -1850,7 +1850,7 @@ insertionDiagram <- function(insertion_data, style = 1,
             sector_colours[1], sector_border_colours[1],
             sector_labels, sector_label_size, sector_label_colour)
         .plotXaxis(xaxis, xaxis_label_size, xaxis_colour,
-            xaxis_spacing, sectors = inserted_sequence,
+            xaxis_spacing, sectors = original_sequence,
             xaxis_spacing_unit = xaxis_spacing_unit)
 
         ## inner box for insertion(s)
