@@ -24,8 +24,8 @@
 #' @importFrom Rsamtools ScanBamParam
 #' @importFrom IRanges IRanges
 #' @importFrom IRanges shift
-#' @importFrom GenomeInfoDb seqlengths
-#' @importFrom GenomeInfoDb seqlevels
+#' @importFrom Seqinfo seqlengths
+#' @importFrom Seqinfo seqlevels
 #' @importFrom GenomicRanges GRanges
 #' @importFrom S4Vectors elementNROWS
 #' @importFrom BiocGenerics unlist
@@ -86,7 +86,7 @@ getCoverage <- function(regions_of_interest, bam_file,
         }
         coverage_range <- GRanges(regions_of_interest,
             IRanges::IRanges(start = rep(0, length(regions_of_interest)),
-                end = GenomeInfoDb::seqlengths(sequence_info)[
+                end = Seqinfo::seqlengths(sequence_info)[
                     regions_of_interest] - 1))
 
     } else {
@@ -95,7 +95,7 @@ getCoverage <- function(regions_of_interest, bam_file,
 
     ## check the sequence names given are in the bam
     ## file
-    if (!all(GenomeInfoDb::seqlevels(coverage_range) %in%
+    if (!all(Seqinfo::seqlevels(coverage_range) %in%
         names(sequence_info))) {
         stop("Make sure all of the chromsomes in regions_of_interest are in the
             bam file and spelled exactly the same as in the bam")
@@ -150,8 +150,8 @@ getCoverage <- function(regions_of_interest, bam_file,
     }
 
     ## change 1 to chr1 etc
-    GenomeInfoDb::seqlevels(coverage_data) <- as.character(
-        .addChrToNumber(GenomeInfoDb::seqlevels(coverage_data)))
+    Seqinfo::seqlevels(coverage_data) <- as.character(
+        .addChrToNumber(Seqinfo::seqlevels(coverage_data)))
 
     ## warn if there's more than 10-15k points
     if (length(coverage_data) > 10000) {
@@ -184,10 +184,10 @@ getCoverage <- function(regions_of_interest, bam_file,
 #' @export
 #' @importFrom Biostrings readDNAStringSet
 #' @importFrom BiocGenerics width
-#' @importFrom GenomeInfoDb seqinfo
-#' @importFrom GenomeInfoDb seqnames
-#' @importFrom GenomeInfoDb seqlengths
-#' @importFrom GenomeInfoDb seqlevels
+#' @importFrom Seqinfo seqinfo
+#' @importFrom Seqinfo seqnames
+#' @importFrom Seqinfo seqlengths
+#' @importFrom Seqinfo seqlevels
 #' @importFrom IRanges IRanges
 #' @importFrom Rsamtools BamFile
 #' @importFrom GenomicRanges GRanges
@@ -268,8 +268,8 @@ getIdeogramData <- function(bam_file = NULL, fasta_file = NULL,
     ## otherwise, read in all of the sequences names
     ## and then filter
     if (!is.null(bam_file)) {
-        sequence_info <- GenomeInfoDb::seqinfo(Rsamtools::BamFile(bam_file))
-        sequence_names <- GenomeInfoDb::seqnames(sequence_info)
+        sequence_info <- Seqinfo::seqinfo(Rsamtools::BamFile(bam_file))
+        sequence_names <- Seqinfo::seqnames(sequence_info)
 
     } else if (!is.null(fasta_folder)) {
         sequence_names <- list.files(fasta_folder,
@@ -316,11 +316,11 @@ getIdeogramData <- function(bam_file = NULL, fasta_file = NULL,
     ## get the start/end of each sequence and format
     ## 'ideogram_data' as GRanges
     if (!is.null(bam_file)) {
-        GenomeInfoDb::seqlevels(sequence_info) <- sequence_names
+        Seqinfo::seqlevels(sequence_info) <- sequence_names
         ideogram_data <- GRanges(seqnames = sequence_names,
             ranges = IRanges::IRanges(start = rep(0,
                 length(sequence_names)),
-                end = GenomeInfoDb::seqlengths(sequence_info)))
+                end = Seqinfo::seqlengths(sequence_info)))
 
     } else if (!is.null(fasta_folder)) {
         fasta <- Biostrings::readDNAStringSet(sequence_names)
@@ -330,8 +330,8 @@ getIdeogramData <- function(bam_file = NULL, fasta_file = NULL,
     }
 
     if (add_chr == TRUE) {
-        GenomeInfoDb::seqlevels(ideogram_data) <- as.character(
-            .addChrToNumber(GenomeInfoDb::seqlevels(ideogram_data)))
+        Seqinfo::seqlevels(ideogram_data) <- as.character(
+            .addChrToNumber(Seqinfo::seqlevels(ideogram_data)))
     }
 
     return(ideogram_data)

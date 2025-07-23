@@ -175,11 +175,11 @@ structures and functions used in `gmoviz` To install it, type in the R console:
 ```r
 BiocManager::install("BiocGenerics")
 ```
-* `r Biocpkg("GenomeInfoDb")` and `r Biocpkg("GenomicAlignments")` are used to 
+* `r Biocpkg("Seqinfo")` and `r Biocpkg("GenomicAlignments")` are used to 
 read in the coverage data from _.bam_ files. To install them, type in the 
 R console: 
 ```r
-BiocManager::install(c("GenomeInfoDb", "GenomicAlignments"))
+BiocManager::install(c("Seqinfo", "GenomicAlignments"))
 ```
 
 # Quick start {#quick_start}

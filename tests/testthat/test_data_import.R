@@ -2,8 +2,9 @@ context("Data import functions")
 library(gmoviz)
 library(GenomicRanges)
 library(BiocGenerics)
-library(GenomeInfoDb)
+library(Seqinfo)
 library(rtracklayer)
+library(GenomeInfoDb)  # for keepSeqlevels()
 
 #### features from gff ####
 coloured_by_type <- GRanges(

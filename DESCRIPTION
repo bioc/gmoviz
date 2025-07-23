@@ -2,7 +2,7 @@ Package: gmoviz
 Type: Package 
 Title: Seamless visualization of complex genomic variations in GMOs and
     edited cell lines
-Version: 1.21.0
+Version: 1.21.1
 Authors@R: c(
     person("Kathleen", "Zeglinski", email = "kathleen.zeglinski@csl.com.au", 
     role = c("cre", "aut")), 
@@ -38,7 +38,7 @@ Imports:
     ComplexHeatmap, 
     BiocGenerics, 
     Biostrings, 
-    GenomeInfoDb, 
+    Seqinfo, 
     methods, 
     GenomicAlignments, 
     GenomicFeatures, 
@@ -57,5 +57,6 @@ Suggests:
     rmarkdown,
     pasillaBamSubset,
     BiocStyle, 
-    BiocManager
+    BiocManager,
+    GenomeInfoDb
 VignetteBuilder: knitr
